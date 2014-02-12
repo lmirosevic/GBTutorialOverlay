@@ -10,4 +10,22 @@
 
 @implementation GBTutorialOverlay
 
+#pragma mark - Memory
+
+@end
+
+
+@implementation GBTutorialOverlayHintProperties
+@end
+
+@implementation GBTutorialOverlayBasicHintView
+
+-(void)setHintText:(NSString *)hintText {
+    self.hintLabel.text = hintText;
+}
+
+-(NSString *)hintText {
+    return self.hintLabel.text;
+}
+
 @end
