@@ -63,6 +63,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8AA807FD18B26AB8009C686F /* GBTutorialOverlayResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = GBTutorialOverlayResources.bundle; sourceTree = "<group>"; };
 		8AEB2BEC18ABBE94005BAF7C /* libGBTutorialOverlay.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libGBTutorialOverlay.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AEB2BEF18ABBE94005BAF7C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		8AEB2BF318ABBE94005BAF7C /* GBTutorialOverlay-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GBTutorialOverlay-Prefix.pch"; sourceTree = "<group>"; };
@@ -100,6 +101,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8AA807FC18B26AAB009C686F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8AA807FD18B26AB8009C686F /* GBTutorialOverlayResources.bundle */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		8AEB2BE318ABBE94005BAF7C = {
 			isa = PBXGroup;
 			children = (
@@ -135,6 +144,7 @@
 			children = (
 				8AEB2BF418ABBE94005BAF7C /* GBTutorialOverlay.h */,
 				8AEB2C2518ABBFFC005BAF7C /* GBTutorialOverlay.m */,
+				8AA807FC18B26AAB009C686F /* Resources */,
 				8AEB2BF218ABBE94005BAF7C /* Supporting Files */,
 			);
 			path = GBTutorialOverlay;
