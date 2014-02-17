@@ -14,16 +14,66 @@
 static BOOL const kDefaultTapToClose =                                          YES;
 #define kDefaultCloseButtonImage                                                [UIImage imageNamed:@"GBTutorialOverlayResources.bundle/GBTutorialOverlayDefaultCloseImage.png"]
 static GBTutorialOverlayCloseImagePosition kDefaultCloseButtonPosition =        GBTutorialOverlayCloseImagePositionTopRight;
-static CGPoint const kDefaultCloseButtonOffset =                                (CGPoint){10, 10};
+static CGPoint const kDefaultCloseButtonOffset =                                (CGPoint){10, 30};
 #define kDefaultViewForPresentation                                             [[UIApplication sharedApplication] keyWindow]
 
 static NSTimeInterval const kAnimationDuriation =                               0.15;
 
-@interface GBTutorialOverlay ()
+@interface GBTutorialOverlayManager : NSObject
 
-@property (strong, nonatomic, readwrite) UIView                                 *view;
-@property (strong, nonatomic) UITapGestureRecognizer                            *tapGestureRecognizer;
-@property (strong, nonatomic) UIButton                                          *closeButton;
+@property (strong, nonatomic) NSMutableArray                                    *overlays;
+
++(GBTutorialOverlayManager *)sharedManager;
+
+@end
+
+@implementation GBTutorialOverlayManager
+
+#pragma mark - Memory
+
++(GBTutorialOverlayManager *)sharedManager {
+    static GBTutorialOverlayManager *sharedManager;
+    @synchronized(self) {
+        if (!sharedManager) {
+            sharedManager = [GBTutorialOverlayManager new];
+        }
+        
+        return sharedManager;
+    }
+}
+
+-(id)init {
+    if (self = [super init]) {
+        self.overlays = [NSMutableArray new];
+    }
+    
+    return self;
+}
+
+#pragma mark - API
+
+-(void)presentOverlay:(GBTutorialOverlay *)overlay animated:(BOOL)animated {
+    [self.overlays addObject:overlay];//retain the overlay
+    
+    overlay.view.frame = overlay.viewForPresentation.bounds;
+    overlay.view.alpha = 0.;
+    [overlay.viewForPresentation addSubview:overlay.view];
+    
+    [UIView animateWithDuration:(animated ? kAnimationDuriation : 0.) animations:^{
+        overlay.view.alpha = 1.;
+    } completion:^(BOOL finished) {
+        //noop
+    }];
+}
+
+-(void)dismissOverlay:(GBTutorialOverlay *)overlay animated:(BOOL)animated {
+    [UIView animateWithDuration:(animated ? kAnimationDuriation : 0.) animations:^{
+        overlay.view.alpha = 0.;
+    } completion:^(BOOL finished) {
+        [overlay.view removeFromSuperview];
+        [self.overlays removeObject:overlay];//destroy the overlay
+    }];
+}
 
 @end
 
@@ -31,6 +81,14 @@ static NSTimeInterval const kAnimationDuriation =                               
 
 -(id)init {
     if (self = [super init]) {
+        //DO NOT EDIT THIS, use the initWithDefaults method instead to set configuration for this object
+    }
+    
+    return self;
+}
+
+-(id)initWithDefaults {
+    if (self = [self init]) {
         self.backgroundColor = kDefaultBackgroundColor;
         self.isTapToCloseEnabled = kDefaultTapToClose;
         
@@ -46,11 +104,28 @@ static NSTimeInterval const kAnimationDuriation =                               
 
 @end
 
+@interface GBTutorialOverlay ()
+
+@property (strong, nonatomic, readwrite) UIView                                 *view;
+@property (strong, nonatomic) UITapGestureRecognizer                            *tapGestureRecognizer;
+@property (strong, nonatomic) UIButton                                          *closeButton;
+
+@end
+
 @implementation GBTutorialOverlay
 
 #pragma mark - Memory
 
-_singleton(GBTutorialOverlay, defaults)
++(GBTutorialOverlayDefaults *)defaults {
+    static GBTutorialOverlayDefaults *defaults;
+    @synchronized(self) {
+        if (!defaults) {
+            defaults = [[GBTutorialOverlayDefaults alloc] initWithDefaults];
+        }
+        
+        return defaults;
+    }
+}
 
 -(id)init {
     if (self = [super init]) {
@@ -122,23 +197,15 @@ _singleton(GBTutorialOverlay, defaults)
 }
 
 -(void)presentAnimated:(BOOL)animated {
-    self.view.frame = self.viewForPresentation.bounds;
-    self.view.alpha = 0.;
-    [self.viewForPresentation addSubview:self.view];
+    [[GBTutorialOverlayManager sharedManager] presentOverlay:self animated:animated];
     
-    [UIView animateWithDuration:kAnimationDuriation animations:^{
-        self.view.alpha = 1.;
-    } completion:^(BOOL finished) {
-        //noop
-    }];
+    [self _updateCloseButton];
 }
 
 -(void)dismissAnimated:(BOOL)animated {
-    [UIView animateWithDuration:kAnimationDuriation animations:^{
-        self.view.alpha = 0.;
-    } completion:^(BOOL finished) {
-        [self.view removeFromSuperview];
-    }];
+    [[GBTutorialOverlayManager sharedManager] dismissOverlay:self animated:animated];
+    
+    [self _updateCloseButton];
 }
 
 +(GBTutorialOverlay *)overlayViewWithStencils:(NSArray *)hintViews {

@@ -26,7 +26,7 @@ typedef enum {
 @property (strong, nonatomic) UIColor                                       *backgroundColor;           //default: black with opacity 0.75
 @property (assign, nonatomic) BOOL                                          isTapToCloseEnabled;        //default: YES
 @property (strong, nonatomic) UIImage                                       *closeButtonImage;          //default: GBTutorialOverlayResources.bundle/GBTutorialOverlayDefaultCloseImage.png
-@property (assign, nonatomic) CGPoint                                       closeButtonOffset;          //default: {10,10}
+@property (assign, nonatomic) CGPoint                                       closeButtonOffset;          //default: {10,30}
 @property (assign, nonatomic) GBTutorialOverlayCloseImagePosition           closeButtonPosition;        //default: GBTutorialOverlayCloseImagePositionTopRight
 @property (weak, nonatomic) UIView                                          *viewForPresentation;       //default: [[UIApplication sharedApplication] keyWindow]
 
@@ -51,7 +51,7 @@ typedef enum {
 //properties which encode where and how to display a view
 @interface GBTutorialOverlayHintProperties : NSObject
 
-@property (copy, nonatomic) UIView                                          *targetView;
+@property (weak, nonatomic) UIView                                          *targetView;
 @property (assign, nonatomic) GBStickyViewsAnchor                           masterAnchor;
 @property (assign, nonatomic) GBStickyViewsAnchor                           hintAnchor;
 @property (assign, nonatomic) CGPoint                                       offset;
