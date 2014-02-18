@@ -295,6 +295,10 @@ static NSTimeInterval const kAnimationDuriation =                               
 
 @implementation GBTutorialOverlayStencil
 
+GBTutorialOverlayStencil * GBTutorialStencilMake(NSString *hintViewNibName, NSString *hintText, UIView *targetView, GBStickyViewsAnchor masterAnchor, GBStickyViewsAnchor hintAnchor, CGPoint offset) {
+    return [GBTutorialOverlayStencil stencilWithNibName:hintViewNibName hintText:hintText targetView:targetView masterAnchor:masterAnchor hintAnchor:hintAnchor offset:offset];
+}
+
 +(GBTutorialOverlayStencil *)stencilWithNibName:(NSString *)hintViewNibName hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset {
     GBTutorialOverlayStencil *stencil = [GBTutorialOverlayStencil new];
 

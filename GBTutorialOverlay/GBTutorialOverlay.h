@@ -65,6 +65,7 @@ typedef enum {
 @property (copy, nonatomic) NSString                                        *hintText;
 @property (copy, nonatomic) NSString                                        *hintViewNibName;//the view in this nib at position 0 must conform to GBTutorialOverlayHintViewInterface
 
+GBTutorialOverlayStencil * GBTutorialStencilMake(NSString *hintViewNibName, NSString *hintText, UIView *targetView, GBStickyViewsAnchor masterAnchor, GBStickyViewsAnchor hintAnchor, CGPoint offset);//just a convenience that makes for better readability in client code
 +(GBTutorialOverlayStencil *)stencilWithNibName:(NSString *)hintViewNibName hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset;
 
 @end
