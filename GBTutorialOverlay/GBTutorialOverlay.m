@@ -59,8 +59,6 @@ static NSTimeInterval const kDefaultDismissAnimationDuration =                  
     overlay.view.alpha = 0.;
     [overlay.viewForPresentation addSubview:overlay.view];
     
-    _lFloating(overlay.presentAnimationDuration);//lm kill
-    
     [UIView animateWithDuration:(animated ? overlay.presentAnimationDuration : 0.) animations:^{
         overlay.view.alpha = 1.;
     } completion:^(BOOL finished) {
