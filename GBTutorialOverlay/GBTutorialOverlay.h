@@ -29,6 +29,8 @@ typedef enum {
 @property (assign, nonatomic) CGPoint                                       closeButtonOffset;          //default: {10,30}
 @property (assign, nonatomic) GBTutorialOverlayCloseImagePosition           closeButtonPosition;        //default: GBTutorialOverlayCloseImagePositionTopRight
 @property (weak, nonatomic) UIView                                          *viewForPresentation;       //default: [[UIApplication sharedApplication] keyWindow]
+@property (assign, nonatomic) NSTimeInterval                                presentAnimationDuration;   //default: 0.3
+@property (assign, nonatomic) NSTimeInterval                                dismissAnimationDuration;   //default: 0.15
 
 @end
 

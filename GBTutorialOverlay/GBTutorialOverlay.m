@@ -16,8 +16,8 @@ static BOOL const kDefaultTapToClose =                                          
 static GBTutorialOverlayCloseImagePosition kDefaultCloseButtonPosition =        GBTutorialOverlayCloseImagePositionTopRight;
 static CGPoint const kDefaultCloseButtonOffset =                                (CGPoint){10, 30};
 #define kDefaultViewForPresentation                                             [[UIApplication sharedApplication] keyWindow]
-
-static NSTimeInterval const kAnimationDuriation =                               0.15;
+static NSTimeInterval const kDefaultPresentAnimationDuration =                  0.3;
+static NSTimeInterval const kDefaultDismissAnimationDuration =                  0.15;
 
 @interface GBTutorialOverlayManager : NSObject
 
@@ -59,7 +59,9 @@ static NSTimeInterval const kAnimationDuriation =                               
     overlay.view.alpha = 0.;
     [overlay.viewForPresentation addSubview:overlay.view];
     
-    [UIView animateWithDuration:(animated ? kAnimationDuriation : 0.) animations:^{
+    _lFloating(overlay.presentAnimationDuration);//lm kill
+    
+    [UIView animateWithDuration:(animated ? overlay.presentAnimationDuration : 0.) animations:^{
         overlay.view.alpha = 1.;
     } completion:^(BOOL finished) {
         //noop
@@ -67,7 +69,7 @@ static NSTimeInterval const kAnimationDuriation =                               
 }
 
 -(void)dismissOverlay:(GBTutorialOverlay *)overlay animated:(BOOL)animated {
-    [UIView animateWithDuration:(animated ? kAnimationDuriation : 0.) animations:^{
+    [UIView animateWithDuration:(animated ? overlay.dismissAnimationDuration : 0.) animations:^{
         overlay.view.alpha = 0.;
     } completion:^(BOOL finished) {
         [overlay.view removeFromSuperview];
@@ -97,6 +99,9 @@ static NSTimeInterval const kAnimationDuriation =                               
         self.closeButtonPosition = kDefaultCloseButtonPosition;
         
         self.viewForPresentation = kDefaultViewForPresentation;
+        
+        self.presentAnimationDuration = kDefaultPresentAnimationDuration;
+        self.dismissAnimationDuration = kDefaultDismissAnimationDuration;
     }
     
     return self;
@@ -147,6 +152,8 @@ static NSTimeInterval const kAnimationDuriation =                               
         self.closeButtonOffset = [self.class defaults].closeButtonOffset;
         self.closeButtonPosition = [self.class defaults].closeButtonPosition;
         self.viewForPresentation = [self.class defaults].viewForPresentation;
+        self.presentAnimationDuration = [self.class defaults].presentAnimationDuration;
+        self.dismissAnimationDuration = [self.class defaults].dismissAnimationDuration;
     }
     
     return self;
