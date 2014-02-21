@@ -7,7 +7,6 @@ Dependencies
 ------------
 
 * [GBStickyViews](https://github.com/lmirosevic/GBStickyViews)
-* [GBToolbox](https://github.com/lmirosevic/GBToolbox)
 
 Copyright & License
 ------------
