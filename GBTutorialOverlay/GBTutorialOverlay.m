@@ -16,7 +16,7 @@ static BOOL const kDefaultTapToClose =                                          
 static GBTutorialOverlayCloseImagePosition kDefaultCloseButtonPosition =        GBTutorialOverlayCloseImagePositionTopRight;
 static CGPoint const kDefaultCloseButtonOffset =                                (CGPoint){10, 30};
 #define kDefaultViewForPresentation                                             [[UIApplication sharedApplication] keyWindow]
-static NSTimeInterval const kDefaultPresentAnimationDuration =                  0.3;
+static NSTimeInterval const kDefaultPresentAnimationDuration =                  0.25;
 static NSTimeInterval const kDefaultDismissAnimationDuration =                  0.15;
 
 @interface GBTutorialOverlayManager : NSObject
@@ -79,6 +79,17 @@ static NSTimeInterval const kDefaultDismissAnimationDuration =                  
 
 @implementation GBTutorialOverlayDefaults
 
++(GBTutorialOverlayDefaults *)defaults {
+    static GBTutorialOverlayDefaults *_defaults;
+    @synchronized(self) {
+        if (!_defaults) {
+            _defaults = [[self alloc] initWithDefaults];
+        }
+        
+        return _defaults;
+    }
+}
+
 -(id)init {
     if (self = [super init]) {
         //DO NOT EDIT THIS, use the initWithDefaults method instead to set configuration for this object
@@ -119,17 +130,6 @@ static NSTimeInterval const kDefaultDismissAnimationDuration =                  
 
 #pragma mark - Memory
 
-+(GBTutorialOverlayDefaults *)defaults {
-    static GBTutorialOverlayDefaults *defaults;
-    @synchronized(self) {
-        if (!defaults) {
-            defaults = [[GBTutorialOverlayDefaults alloc] initWithDefaults];
-        }
-        
-        return defaults;
-    }
-}
-
 -(id)init {
     if (self = [super init]) {
         //background view
@@ -144,14 +144,14 @@ static NSTimeInterval const kDefaultDismissAnimationDuration =                  
         [self.closeButton addTarget:self action:@selector(_closeAction:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:self.closeButton];
         
-        self.backgroundColor = [self.class defaults].backgroundColor;
-        self.isTapToCloseEnabled = [self.class defaults].isTapToCloseEnabled;
-        self.closeButtonImage = [self.class defaults].closeButtonImage;
-        self.closeButtonOffset = [self.class defaults].closeButtonOffset;
-        self.closeButtonPosition = [self.class defaults].closeButtonPosition;
-        self.viewForPresentation = [self.class defaults].viewForPresentation;
-        self.presentAnimationDuration = [self.class defaults].presentAnimationDuration;
-        self.dismissAnimationDuration = [self.class defaults].dismissAnimationDuration;
+        self.backgroundColor = [GBTutorialOverlayDefaults defaults].backgroundColor;
+        self.isTapToCloseEnabled = [GBTutorialOverlayDefaults defaults].isTapToCloseEnabled;
+        self.closeButtonImage = [GBTutorialOverlayDefaults defaults].closeButtonImage;
+        self.closeButtonOffset = [GBTutorialOverlayDefaults defaults].closeButtonOffset;
+        self.closeButtonPosition = [GBTutorialOverlayDefaults defaults].closeButtonPosition;
+        self.viewForPresentation = [GBTutorialOverlayDefaults defaults].viewForPresentation ?: kDefaultViewForPresentation;//if the defaults singleton is initialised before the window is created, then this will end up as nil, but the user might have just been configuring the defaults in the application:didFinishLaunchingWithOptions: method with the hope of displaying the overlay on the window, so this defers the updating until later
+        self.presentAnimationDuration = [GBTutorialOverlayDefaults defaults].presentAnimationDuration;
+        self.dismissAnimationDuration = [GBTutorialOverlayDefaults defaults].dismissAnimationDuration;
     }
     
     return self;
@@ -184,6 +184,10 @@ static NSTimeInterval const kDefaultDismissAnimationDuration =                  
 }
 
 #pragma mark - API
+
++(GBTutorialOverlayDefaults *)defaults {
+    return [GBTutorialOverlayDefaults defaults];
+}
 
 -(void)addHintView:(UIView<GBTutorialOverlayHintViewInterface> *)hintView withProperties:(GBTutorialOverlayHintProperties *)hintProperties {
     //add the hint view
