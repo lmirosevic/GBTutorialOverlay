@@ -224,7 +224,7 @@ static NSTimeInterval const kDefaultDismissAnimationDuration =                  
         if (![stencil isKindOfClass:GBTutorialOverlayStencil.class]) @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Must pass in array of objects with type of GBTutorialOverlayStencil" userInfo:nil];
         
         //create the hint view
-        UIView<GBTutorialOverlayHintViewInterface> *hintView = v(stencil.hintViewNibName);
+        UIView<GBTutorialOverlayHintViewInterface> *hintView = stencil.hintView;
         hintView.hintText = stencil.hintText;
         
         //create the properties object
@@ -304,15 +304,15 @@ static NSTimeInterval const kDefaultDismissAnimationDuration =                  
 
 @implementation GBTutorialOverlayStencil
 
-GBTutorialOverlayStencil * GBTutorialStencilMake(NSString *hintViewNibName, NSString *hintText, UIView *targetView, GBStickyViewsAnchor masterAnchor, GBStickyViewsAnchor hintAnchor, CGPoint offset) {
-    return [GBTutorialOverlayStencil stencilWithNibName:hintViewNibName hintText:hintText targetView:targetView masterAnchor:masterAnchor hintAnchor:hintAnchor offset:offset];
+GBTutorialOverlayStencil * GBTutorialStencilMake(UIView<GBTutorialOverlayHintViewInterface> *hintView, NSString *hintText, UIView *targetView, GBStickyViewsAnchor masterAnchor, GBStickyViewsAnchor hintAnchor, CGPoint offset) {
+    return [GBTutorialOverlayStencil stencilWithHintView:hintView hintText:hintText targetView:targetView masterAnchor:masterAnchor hintAnchor:hintAnchor offset:offset];
 }
 
-+(GBTutorialOverlayStencil *)stencilWithNibName:(NSString *)hintViewNibName hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset {
++(GBTutorialOverlayStencil *)stencilWithHintView:(UIView<GBTutorialOverlayHintViewInterface> *)hintView hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset {
     GBTutorialOverlayStencil *stencil = [GBTutorialOverlayStencil new];
 
     stencil.hintText = hintText;
-    stencil.hintViewNibName = hintViewNibName;
+    stencil.hintView = hintView;
     
     GBTutorialOverlayHintProperties *hintProperties = [GBTutorialOverlayHintProperties new];
     hintProperties.targetView = targetView;
@@ -322,6 +322,37 @@ GBTutorialOverlayStencil * GBTutorialStencilMake(NSString *hintViewNibName, NSSt
     stencil.hintProperties = hintProperties;
     
     return stencil;
+}
+
+@end
+
+@implementation GBTutorialOverlayNibStencil
+
+GBTutorialOverlayStencil * GBTutorialStencilMakeFromNib(NSString *hintViewNibName, NSString *hintText, UIView *targetView, GBStickyViewsAnchor masterAnchor, GBStickyViewsAnchor hintAnchor, CGPoint offset) {
+    return [GBTutorialOverlayNibStencil stencilWithNibName:hintViewNibName hintText:hintText targetView:targetView masterAnchor:masterAnchor hintAnchor:hintAnchor offset:offset];
+}
+
++(GBTutorialOverlayStencil *)stencilWithNibName:(NSString *)hintViewNibName hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset {
+    
+    UIView<GBTutorialOverlayHintViewInterface> *hintView = v(hintViewNibName);
+    
+    return [self stencilWithHintView:hintView hintText:hintText targetView:targetView masterAnchor:masterAnchor hintAnchor:hintAnchor offset:offset];
+}
+
+@end
+
+@implementation GBTutorialOverlayClassStencil
+
+GBTutorialOverlayStencil * GBTutorialStencilMakeFromClass(Class<GBTutorialOverlayHintViewInterface> hintViewClass, NSString *hintText, UIView *targetView, GBStickyViewsAnchor masterAnchor, GBStickyViewsAnchor hintAnchor, CGPoint offset) {
+    return [GBTutorialOverlayClassStencil stencilWithClass:hintViewClass hintText:hintText targetView:targetView masterAnchor:masterAnchor hintAnchor:hintAnchor offset:offset];
+}
+
++(GBTutorialOverlayStencil *)stencilWithClass:(Class<GBTutorialOverlayHintViewInterface>)hintViewClass hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset {
+    if (![hintViewClass.class isSubclassOfClass:UIView.class]) @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"hintViewClass must be a subclass of UIView" userInfo:nil];
+    
+    UIView<GBTutorialOverlayHintViewInterface> *hintView = [hintViewClass.class new];
+    
+    return [self stencilWithHintView:hintView hintText:hintText targetView:targetView masterAnchor:masterAnchor hintAnchor:hintAnchor offset:offset];
 }
 
 @end
