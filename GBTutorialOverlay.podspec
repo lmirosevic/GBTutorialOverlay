@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "GBTutorialOverlay"
-  s.version      = "0.2.0"
+  s.version      = "0.3.0"
   s.summary      = "A little library to create simple but smart tutorial overlays."
   s.homepage     = "https://github.com/lmirosevic/GBTutorialOverlay"
   s.license      = 'Apache License, Version 2.0'
