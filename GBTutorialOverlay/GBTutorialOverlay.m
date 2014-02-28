@@ -18,10 +18,13 @@ static CGPoint const kDefaultCloseButtonOffset =                                
 #define kDefaultViewForPresentation                                             [[UIApplication sharedApplication] keyWindow]
 static NSTimeInterval const kDefaultPresentAnimationDuration =                  0.25;
 static NSTimeInterval const kDefaultDismissAnimationDuration =                  0.15;
+static BOOL const kDefaultShouldAllowMultipleOverlays =                         NO;
 
 @interface GBTutorialOverlayManager : NSObject
 
 @property (strong, nonatomic) NSMutableArray                                    *overlays;
+
+@property (assign, nonatomic) BOOL                                              shouldAllowMultipleOverlays;
 
 +(GBTutorialOverlayManager *)sharedManager;
 
@@ -45,6 +48,7 @@ static NSTimeInterval const kDefaultDismissAnimationDuration =                  
 -(id)init {
     if (self = [super init]) {
         self.overlays = [NSMutableArray new];
+        self.shouldAllowMultipleOverlays = kDefaultShouldAllowMultipleOverlays;
     }
     
     return self;
@@ -53,6 +57,10 @@ static NSTimeInterval const kDefaultDismissAnimationDuration =                  
 #pragma mark - API
 
 -(void)presentOverlay:(GBTutorialOverlay *)overlay animated:(BOOL)animated {
+    if (![GBTutorialOverlay shouldAllowMultipleOverlays]) {
+        [self _dismissAllOverlaysAnimated:NO];
+    }
+    
     [self.overlays addObject:overlay];//retain the overlay
     
     overlay.view.frame = overlay.viewForPresentation.bounds;
@@ -73,6 +81,16 @@ static NSTimeInterval const kDefaultDismissAnimationDuration =                  
         [overlay.view removeFromSuperview];
         [self.overlays removeObject:overlay];//destroy the overlay
     }];
+}
+
+#pragma mark - Util
+
+-(void)_dismissAllOverlaysAnimated:(BOOL)animated {
+    for (GBTutorialOverlay *overlay in self.overlays) {
+        [overlay dismissAnimated:animated];
+    }
+    
+    [self.overlays removeAllObjects];
 }
 
 @end
@@ -127,6 +145,15 @@ static NSTimeInterval const kDefaultDismissAnimationDuration =                  
 @end
 
 @implementation GBTutorialOverlay
+
+#pragma mark - CA
+
++(BOOL)shouldAllowMultipleOverlays {
+    return [GBTutorialOverlayManager sharedManager].shouldAllowMultipleOverlays;
+}
++(void)setShouldAllowMultipleOverlays:(BOOL)shouldAllowMultipleOverlays {
+    [GBTutorialOverlayManager sharedManager].shouldAllowMultipleOverlays = shouldAllowMultipleOverlays;
+}
 
 #pragma mark - Memory
 

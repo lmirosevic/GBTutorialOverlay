@@ -48,6 +48,10 @@ typedef enum {
 -(void)presentAnimated:(BOOL)animated;
 -(void)dismissAnimated:(BOOL)animated;
 
+
++(BOOL)shouldAllowMultipleOverlays;                                                 //default: NO
++(void)setShouldAllowMultipleOverlays:(BOOL)shouldAllowMultipleOverlays;
+
 @end
 
 //properties which encode where and how to display a view
