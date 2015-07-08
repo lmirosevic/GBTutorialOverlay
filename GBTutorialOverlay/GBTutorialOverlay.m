@@ -8,8 +8,6 @@
 
 #import "GBTutorialOverlay.h"
 
-#import <GBToolbox/GBToolbox.h>
-
 #define kDefaultBackgroundColor                                                 [UIColor colorWithWhite:0 alpha:0.75]
 static BOOL const kDefaultTapToClose =                                          YES;
 #define kDefaultCloseButtonImage                                                [UIImage imageNamed:@"GBTutorialOverlayResources.bundle/GBTutorialOverlayDefaultCloseImage.png"]
@@ -411,7 +409,7 @@ GBTutorialOverlayStencil * GBTutorialStencilMakeFromNib(NSString *hintViewNibNam
 
 + (GBTutorialOverlayStencil *)stencilWithNibName:(NSString *)hintViewNibName hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset {
     
-    UIView<GBTutorialOverlayHintViewInterface> *hintView = v(hintViewNibName);
+    UIView<GBTutorialOverlayHintViewInterface> *hintView = [[NSBundle.mainBundle loadNibNamed:hintViewNibName owner:nil options:nil] firstObject];
     
     return [self stencilWithHintView:hintView hintText:hintText targetView:targetView masterAnchor:masterAnchor hintAnchor:hintAnchor offset:offset];
 }
