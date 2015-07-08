@@ -17,6 +17,8 @@ typedef enum {
     GBTutorialOverlayCloseImagePositionTopLeft,
 } GBTutorialOverlayCloseImagePosition;
 
+typedef void(^GBTutorialOverlayDismissBlock)(BOOL isUserInitiatied);
+
 @protocol GBTutorialOverlayHintViewInterface;
 @class GBTutorialOverlayHintProperties;
 
@@ -39,18 +41,19 @@ typedef enum {
 
 @property (strong, nonatomic, readonly) UIView                                      *view;//the view with all the hints on it
 
-+(GBTutorialOverlayDefaults *)defaults;
++ (GBTutorialOverlayDefaults *)defaults;
 
-+(GBTutorialOverlay *)overlayViewWithStencils:(NSArray *)hintViews;//must be an array of GBTutorialOverlayStencil objects
--(void)addHintView:(UIView<GBTutorialOverlayHintViewInterface> *)hintView withProperties:(GBTutorialOverlayHintProperties *)hintProperties;
--(void)present;
--(void)dismiss;
--(void)presentAnimated:(BOOL)animated;
--(void)dismissAnimated:(BOOL)animated;
++ (GBTutorialOverlay *)overlayViewWithStencils:(NSArray *)stencilViews;
++ (GBTutorialOverlay *)overlayViewWithStencils:(NSArray *)stencilViews dismissDidStartBlock:(GBTutorialOverlayDismissBlock)dismissDidStartBlock dismissDidEndBlock:(GBTutorialOverlayDismissBlock)dismissDidEndBlock;//must be an array of GBTutorialOverlayStencil objects
+- (void)addHintView:(UIView<GBTutorialOverlayHintViewInterface> *)hintView withProperties:(GBTutorialOverlayHintProperties *)hintProperties;
+- (void)present;
+- (void)dismiss;
+- (void)presentAnimated:(BOOL)animated;
+- (void)dismissAnimated:(BOOL)animated;
 
 
-+(BOOL)shouldAllowMultipleOverlays;                                                 //default: NO
-+(void)setShouldAllowMultipleOverlays:(BOOL)shouldAllowMultipleOverlays;
++ (BOOL)shouldAllowMultipleOverlays;                                                 //default: NO
++ (void)setShouldAllowMultipleOverlays:(BOOL)shouldAllowMultipleOverlays;
 
 @end
 
@@ -79,7 +82,7 @@ typedef enum {
 @property (strong, nonatomic) UIView<GBTutorialOverlayHintViewInterface>            *hintView;
 
 GBTutorialOverlayStencil * GBTutorialStencilMake(UIView<GBTutorialOverlayHintViewInterface> *hintView, NSString *hintText, UIView *targetView, GBStickyViewsAnchor masterAnchor, GBStickyViewsAnchor hintAnchor, CGPoint offset);//just a convenience that makes for better readability in client code
-+(GBTutorialOverlayStencil *)stencilWithHintView:(UIView<GBTutorialOverlayHintViewInterface> *)hintView hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset;
++ (GBTutorialOverlayStencil *)stencilWithHintView:(UIView<GBTutorialOverlayHintViewInterface> *)hintView hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset;
 
 @end
 
@@ -89,7 +92,7 @@ GBTutorialOverlayStencil * GBTutorialStencilMake(UIView<GBTutorialOverlayHintVie
 @property (copy, nonatomic, readonly) NSString                                      *hintViewNibName;//the view in this nib at position 0 must conform to GBTutorialOverlayHintViewInterface
 
 GBTutorialOverlayStencil * GBTutorialStencilMakeFromNib(NSString *hintViewNibName, NSString *hintText, UIView *targetView, GBStickyViewsAnchor masterAnchor, GBStickyViewsAnchor hintAnchor, CGPoint offset);//just a convenience that makes for better readability in client code
-+(GBTutorialOverlayStencil *)stencilWithNibName:(NSString *)hintViewNibName hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset;
++ (GBTutorialOverlayStencil *)stencilWithNibName:(NSString *)hintViewNibName hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset;
 
 @end
 
@@ -99,7 +102,7 @@ GBTutorialOverlayStencil * GBTutorialStencilMakeFromNib(NSString *hintViewNibNam
 @property (copy, nonatomic, readonly) Class<GBTutorialOverlayHintViewInterface>     hintViewClass;
 
 GBTutorialOverlayStencil * GBTutorialStencilMakeFromClass(Class<GBTutorialOverlayHintViewInterface> hintViewClass, NSString *hintText, UIView *targetView, GBStickyViewsAnchor masterAnchor, GBStickyViewsAnchor hintAnchor, CGPoint offset);//just a convenience that makes for better readability in client code
-+(GBTutorialOverlayStencil *)stencilWithClass:(Class<GBTutorialOverlayHintViewInterface>)hintViewClass hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset;
++ (GBTutorialOverlayStencil *)stencilWithClass:(Class<GBTutorialOverlayHintViewInterface>)hintViewClass hintText:(NSString *)hintText targetView:(UIView *)targetView masterAnchor:(GBStickyViewsAnchor)masterAnchor hintAnchor:(GBStickyViewsAnchor)hintAnchor offset:(CGPoint)offset;
 
 @end
 
